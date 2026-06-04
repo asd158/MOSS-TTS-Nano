@@ -9,8 +9,7 @@ from typing import Any, Sequence
 
 import numpy as np
 import sentencepiece as spm
-import torch
-import torchaudio
+import librosa
 
 from moss_tts_nano.defaults import DEFAULT_OUTPUT_DIR
 from moss_tts_nano.text.pipeline import WeTextProcessingManager, prepare_tts_request_texts
@@ -444,22 +443,26 @@ class OnnxTtsRuntime(OrtCpuRuntime):
         )
 
     def _load_reference_audio(self, reference_audio_path: str | Path) -> np.ndarray:
-        waveform, sample_rate = torchaudio.load(str(Path(reference_audio_path).expanduser().resolve()))
-        waveform = waveform.to(torch.float32)
+        audio_path = Path(reference_audio_path).expanduser().resolve()
         target_sample_rate = int(self.codec_meta["codec_config"]["sample_rate"])
         target_channels = int(self.codec_meta["codec_config"]["channels"])
-        if sample_rate != target_sample_rate:
-            waveform = torchaudio.functional.resample(waveform, sample_rate, target_sample_rate)
+
+        waveform, sample_rate = librosa.load(str(audio_path), sr=target_sample_rate, mono=False)
+
+        if waveform.ndim == 1:
+            waveform = waveform.reshape(1, -1)
+
         current_channels = int(waveform.shape[0])
         if current_channels == target_channels:
             pass
         elif current_channels == 1 and target_channels > 1:
-            waveform = waveform.repeat(target_channels, 1)
+            waveform = np.tile(waveform, (target_channels, 1))
         elif current_channels > 1 and target_channels == 1:
-            waveform = waveform.mean(dim=0, keepdim=True)
+            waveform = waveform.mean(axis=0, keepdims=True)
         else:
             raise ValueError(f"Unsupported reference audio channel conversion: {current_channels} -> {target_channels}")
-        return waveform.unsqueeze(0).detach().cpu().numpy().astype(np.float32, copy=False)
+
+        return waveform[np.newaxis, :, :].astype(np.float32, copy=False)
 
     def encode_reference_audio(self, reference_audio_path: str | Path) -> list[list[int]]:
         waveform = self._load_reference_audio(reference_audio_path)
