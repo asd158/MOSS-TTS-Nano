@@ -94,7 +94,7 @@ def _build_parser() -> argparse.ArgumentParser:
     generate_parser.add_argument(
         "--execution-provider",
         choices=("cpu", "cuda"),
-        default="cpu",
+        default="cuda",
         help="ONNX backend only. onnxruntime execution provider. cuda requires onnxruntime-gpu.",
     )
     generate_parser.add_argument("--max-new-frames", type=int, default=375)
@@ -188,7 +188,7 @@ def _build_parser() -> argparse.ArgumentParser:
     serve_parser.add_argument(
         "--execution-provider",
         choices=("cpu", "cuda"),
-        default="cpu",
+        default="cuda",
         help="ONNX backend only. onnxruntime execution provider. cuda requires onnxruntime-gpu.",
     )
     serve_parser.add_argument(
@@ -216,7 +216,7 @@ def _validate_onnx_generate_args(args: argparse.Namespace) -> None:
 
 
 def _run_generate_pytorch(args: argparse.Namespace) -> int:
-    import infer as infer_module
+    from moss_tts_nano.inference import infer_pytorch as infer_module
 
     infer_argv: list[str] = [
         "--checkpoint",
@@ -269,7 +269,7 @@ def _run_generate_pytorch(args: argparse.Namespace) -> int:
 
 
 def _run_generate_onnx(args: argparse.Namespace) -> int:
-    import infer_onnx as infer_onnx_module
+    from moss_tts_nano.inference import infer_onnx as infer_onnx_module
 
     _validate_onnx_generate_args(args)
     infer_argv: list[str] = [
@@ -342,7 +342,7 @@ def _validate_onnx_serve_args(args: argparse.Namespace) -> None:
 
 
 def _run_serve_pytorch(args: argparse.Namespace) -> int:
-    import app as app_module
+    from moss_tts_nano.app import app_pytorch as app_module
 
     app_argv = [
         "--checkpoint-path",
@@ -369,7 +369,7 @@ def _run_serve_pytorch(args: argparse.Namespace) -> int:
 
 
 def _run_serve_onnx(args: argparse.Namespace) -> int:
-    import app_onnx as app_onnx_module
+    from moss_tts_nano.app import app_onnx as app_onnx_module
 
     _validate_onnx_serve_args(args)
     app_argv = [

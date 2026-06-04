@@ -13,7 +13,7 @@ from moss_tts_nano.defaults import (
     DEFAULT_CHECKPOINT_PATH,
     DEFAULT_OUTPUT_DIR,
 )
-from text_normalization_pipeline import WeTextProcessingManager, prepare_tts_request_texts
+from moss_tts_nano.text.pipeline import WeTextProcessingManager, prepare_tts_request_texts
 
 MOSS_AUDIO_TOKENIZER_TYPE = "moss-audio-tokenizer-nano"
 DEFAULT_AUDIO_TOKENIZER_PRETRAINED_NAME_OR_PATH = DEFAULT_AUDIO_TOKENIZER_PATH

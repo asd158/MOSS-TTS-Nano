@@ -6,10 +6,10 @@ import re
 import threading
 from dataclasses import dataclass
 
-from tts_robust_normalizer_single_script import normalize_tts_text
+from moss_tts_nano.text.robust_normalizer import normalize_tts_text
 
 ENGLISH_VOICES = frozenset({"Trump", "Ava", "Bella", "Adam", "Nathan"})
-CUSTOM_ZH_WETEXT_CACHE_DIR = Path(__file__).resolve().parent / ".cache" / "wetext_zh_no_erhua_keep_punct"
+CUSTOM_ZH_WETEXT_CACHE_DIR = Path(__file__).resolve().parents[2] / ".cache" / "wetext_zh_no_erhua_keep_punct"
 _ZH_WETEXT_KEEP_HYPHEN = "___KEEP_HYPHEN_BEFORE_ZH_WETEXT___"
 
 

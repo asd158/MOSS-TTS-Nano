@@ -13,15 +13,16 @@ import torch
 import torchaudio
 
 from moss_tts_nano.defaults import DEFAULT_OUTPUT_DIR
-from text_normalization_pipeline import WeTextProcessingManager, prepare_tts_request_texts
+from moss_tts_nano.text.pipeline import WeTextProcessingManager, prepare_tts_request_texts
 
-APP_DIR = Path(__file__).resolve().parent
+APP_DIR = Path(__file__).resolve().parents[2]
 REPO_ROOT = APP_DIR
-from ort_cpu_runtime import (
+from moss_tts_nano.runtime.ort import (
     OrtCpuRuntime,
     _normalize_sample_mode,
     _resolve_stream_decode_frame_budget,
     EXECUTION_PROVIDER_CPU,
+    EXECUTION_PROVIDER_CUDA,
     SAMPLE_MODE_FIXED,
     SAMPLE_MODE_FULL,
     SAMPLE_MODE_GREEDY,
@@ -288,7 +289,7 @@ class OnnxTtsRuntime(OrtCpuRuntime):
         max_new_frames: int | None = None,
         do_sample: bool | None = None,
         sample_mode: str | None = None,
-        execution_provider: str = EXECUTION_PROVIDER_CPU,
+        execution_provider: str = EXECUTION_PROVIDER_CUDA,
         output_dir: str | Path = DEFAULT_OUTPUT_DIR,
     ) -> None:
         resolved_model_dir = ensure_browser_onnx_model_dir(model_dir)

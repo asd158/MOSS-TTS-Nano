@@ -23,20 +23,20 @@ import uvicorn
 from fastapi import FastAPI, File, Form, Request, UploadFile
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, StreamingResponse
 
-from moss_tts_nano_runtime import (
+from moss_tts_nano.runtime.pytorch import (
     DEFAULT_AUDIO_TOKENIZER_PATH,
     DEFAULT_CHECKPOINT_PATH,
     DEFAULT_OUTPUT_DIR,
     NanoTTSService,
 )
-from text_normalization_pipeline import (
+from moss_tts_nano.text.pipeline import (
     TextNormalizationSnapshot as SharedTextNormalizationSnapshot,
     WeTextProcessingManager as SharedWeTextProcessingManager,
     prepare_tts_request_texts as shared_prepare_tts_request_texts,
 )
 
 
-APP_DIR = Path(__file__).resolve().parent
+APP_DIR = Path(__file__).resolve().parents[2]
 DEMO_METADATA_PATH = APP_DIR / "assets" / "demo.jsonl"
 PROMPT_UPLOAD_DIR = APP_DIR / ".app_prompt_uploads"
 

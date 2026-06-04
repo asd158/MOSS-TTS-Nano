@@ -317,7 +317,7 @@ class OrtCpuRuntime:
         max_new_frames: int | None = None,
         do_sample: bool | None = None,
         sample_mode: str | None = None,
-        execution_provider: str = EXECUTION_PROVIDER_CPU,
+        execution_provider: str = EXECUTION_PROVIDER_CUDA,
     ) -> None:
         self.model_dir = Path(model_dir).expanduser().resolve()
         self.thread_count = max(1, int(thread_count))

@@ -5,7 +5,7 @@ import logging
 from pathlib import Path
 from typing import Optional, Sequence
 
-from onnx_tts_runtime import (
+from moss_tts_nano.runtime.onnx import (
     DEFAULT_BROWSER_ONNX_MODEL_DIR,
     DEFAULT_BROWSER_ONNX_OUTPUT_PATH,
     OnnxTtsRuntime,
@@ -77,7 +77,7 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
     parser.add_argument(
         "--execution-provider",
         choices=("cpu", "cuda"),
-        default="cpu",
+        default="cuda",
         help="onnxruntime execution provider. cuda requires an onnxruntime-gpu build.",
     )
     parser.add_argument("--max-new-frames", type=int, default=375, help="Maximum generated audio frames.")

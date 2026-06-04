@@ -14,19 +14,19 @@ from typing import Iterator, Optional, Sequence
 import numpy as np
 import uvicorn
 
-import app as legacy_app
-from onnx_tts_runtime import (
+from moss_tts_nano.app import app_pytorch as legacy_app
+from moss_tts_nano.runtime.onnx import (
     DEFAULT_BROWSER_ONNX_MODEL_DIR,
     OnnxTtsRuntime,
     _concat_waveforms,
     _merge_audio_channels,
     _write_waveform_to_wav,
 )
-from text_normalization_pipeline import WeTextProcessingManager
+from moss_tts_nano.text.pipeline import WeTextProcessingManager
 
-APP_DIR = Path(__file__).resolve().parent
+APP_DIR = Path(__file__).resolve().parents[2]
 REPO_ROOT = APP_DIR
-from ort_cpu_runtime import _normalize_execution_provider, _resolve_stream_decode_frame_budget
+from moss_tts_nano.runtime.ort import _normalize_execution_provider, _resolve_stream_decode_frame_budget
 
 _LEGACY_RENDER_INDEX_HTML = legacy_app._render_index_html
 
@@ -397,7 +397,7 @@ class OnnxRequestRuntimeManager:
     _factory_model_dir: Path | None = None
     _factory_output_dir: Path | None = None
     _factory_max_new_frames: int = 375
-    _factory_execution_provider: str = "cpu"
+    _factory_execution_provider: str = "cuda"
     _factory_text_normalizer_manager: WeTextProcessingManager | None = None
 
     def __init__(self, default_runtime: OnnxNanoTTSServiceAdapter) -> None:
@@ -601,7 +601,7 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
     parser.add_argument(
         "--execution-provider",
         choices=("cpu", "cuda"),
-        default="cpu",
+        default="cuda",
         help="onnxruntime execution provider. cuda requires an onnxruntime-gpu build.",
     )
     parser.add_argument("--max-new-frames", type=int, default=375)
